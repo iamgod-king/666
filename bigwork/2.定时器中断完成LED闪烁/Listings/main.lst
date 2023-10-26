@@ -1,0 +1,56 @@
+C51 COMPILER V9.60.7.0   MAIN                                                              10/20/2023 17:16:51 PAGE 1   
+
+
+C51 COMPILER V9.60.7.0, COMPILATION OF MODULE MAIN
+OBJECT MODULE PLACED IN .\Objects\main.obj
+COMPILER INVOKED BY: C:\Keil_v5\C51\BIN\C51.EXE main.c OPTIMIZE(8,SPEED) BROWSE DEBUG OBJECTEXTEND PRINT(.\Listings\main
+                    -.lst) TABS(2) OBJECT(.\Objects\main.obj)
+
+line level    source
+
+   1          #include <REG52.H>
+   2          
+   3          unsigned char count = 0;  // 计数器变量
+   4          
+   5          sbit LED = P2^0;  // 定义LED为P1口的第0位
+   6          
+   7          void Timer_Init(void) {
+   8   1          TMOD = 0x01;  // 设置定时器0为模式1
+   9   1          TH0 = 0xff;  // 设置计数值
+  10   1          TL0 = 0x00;
+  11   1          ET0 = 1;  // 开启定时器中断
+  12   1          EA = 1;  // 开启总中断
+  13   1          TR0 = 1;  // 启动定时器0
+  14   1      }
+  15          
+  16          void main() {
+  17   1          Timer_Init();
+  18   1      
+  19   1          while (1) 
+  20   1            {
+  21   2              // 主函数中可以添加其他代码
+  22   2            }
+  23   1      }
+  24          /*
+  25          void Timer0_Int() interrup 1 {
+  26              count++;
+  27              if (count == 10) {  // 计数到10之后反转LED灯的状态
+  28                  LED = ~LED;
+  29                  count = 0;
+  30              }
+  31          }
+  32          */
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =     21    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =      1    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

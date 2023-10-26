@@ -1,0 +1,88 @@
+C51 COMPILER V9.60.7.0   MAIN                                                              10/19/2023 11:10:17 PAGE 1   
+
+
+C51 COMPILER V9.60.7.0, COMPILATION OF MODULE MAIN
+OBJECT MODULE PLACED IN .\Objects\main.obj
+COMPILER INVOKED BY: C:\Keil_v5\C51\BIN\C51.EXE main.c OPTIMIZE(8,SPEED) BROWSE DEBUG OBJECTEXTEND PRINT(.\Listings\main
+                    -.lst) TABS(2) OBJECT(.\Objects\main.obj)
+
+line level    source
+
+   1          #include <REGX52.H>
+   2          
+   3          sbit LED_Pin=P2^0;
+   4          
+   5          unsigned int duty_cycle=0;    //pwm占空比
+   6          
+   7          void Delay(unsigned int t)    //简易的延时函数
+   8          {
+   9   1        while(t--);
+  10   1      }
+  11          
+  12          void initTimer() {
+  13   1          TMOD |= 0x01;  // 设置定时器0为工作模式1（16位定时器）
+  14   1          TH0 = 0xFF;    // 设置计数初值，用于控制PWM的频率，可根据实际需求调整
+  15   1          TL0 = 0xFF;
+  16   1      
+  17   1          ET0 = 1;  // 允许定时器0中断
+  18   1          EA = 1;   // 允许总中断
+  19   1      
+  20   1          TR0 = 1;  // 启动定时器/计数器0
+  21   1      }
+  22          
+  23          void updatePWM() interrupt 1 {
+  24   1          static unsigned int counter = 0;
+  25   1      
+  26   1          TH0 = 0xFF;  // 重新加载初值
+  27   1          TL0 = 0xFF;
+  28   1      
+  29   1          counter++;
+  30   1      
+  31   1          if (counter < duty_cycle) 
+  32   1            {
+  33   2              LED_Pin = 1;  // PWM高电平
+  34   2            } 
+  35   1          else 
+  36   1            {
+  37   2              LED_Pin = 0;  // PWM低电平
+  38   2            }
+  39   1      
+  40   1          if (counter >= 100) 
+  41   1            {
+  42   2              counter = 0;
+  43   2            }
+  44   1      }
+  45           
+  46          void main()
+  47          {
+  48   1        initTimer();
+  49   1        while(1)
+  50   1        {
+  51   2          for (duty_cycle = 0; duty_cycle <= 100; duty_cycle++) 
+  52   2          {
+  53   3           Delay(10);    // 呼吸灯灭到亮的过渡延时
+  54   3          }
+C51 COMPILER V9.60.7.0   MAIN                                                              10/19/2023 11:10:17 PAGE 2   
+
+  55   2      
+  56   2              // 呼吸灯逐渐变暗
+  57   2          for (duty_cycle = 100; duty_cycle > 0; duty_cycle--) 
+  58   2          {
+  59   3          Delay(10);    // 呼吸灯亮到灭的过渡延时
+  60   3          }
+  61   2        }
+  62   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    148    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =      4    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

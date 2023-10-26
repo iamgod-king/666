@@ -1,0 +1,72 @@
+C51 COMPILER V9.60.7.0   XPT2046                                                           10/26/2023 00:30:53 PAGE 1   
+
+
+C51 COMPILER V9.60.7.0, COMPILATION OF MODULE XPT2046
+OBJECT MODULE PLACED IN .\Objects\XPT2046.obj
+COMPILER INVOKED BY: C:\Keil_v5\C51\BIN\C51.EXE XPT2046.c OPTIMIZE(8,SPEED) BROWSE INCDIR(..\4.ADC) DEBUG OBJECTEXTEND P
+                    -RINT(.\Listings\XPT2046.lst) TABS(2) OBJECT(.\Objects\XPT2046.obj)
+
+line level    source
+
+   1          #include <REGX52.H>
+   2          #include "Delay.h"
+   3          sbit XPT2046_CS=P3^5;
+   4          sbit XPT2046_DCLK=P3^6;
+   5          sbit XPT2046_DIN=P3^4;
+   6          sbit XPT2046_DOUT=P3^7;
+   7          
+   8          
+   9          
+  10          
+  11          unsigned int XPT2046_ReadAD(unsigned char Command)
+  12          {
+  13   1        unsigned char i;
+  14   1        unsigned int ADValue=0;
+  15   1        XPT2046_CS=0;
+  16   1        XPT2046_DCLK=0;
+  17   1        
+  18   1        for(i=0;i<8;i++)
+  19   1        {
+  20   2          XPT2046_DIN=Command&(0x80>>i);      //不太明白这个>>
+  21   2          XPT2046_DCLK=1;
+  22   2          Delay(10);
+  23   2          XPT2046_DCLK=0;
+  24   2        }
+  25   1        for(i=0;i<16;i++)
+  26   1        {
+  27   2          XPT2046_DCLK=1;
+  28   2          Delay(10);
+  29   2          XPT2046_DCLK=0;
+  30   2          if(XPT2046_DOUT){ADValue|=(0x8000>>i);}//还有这个
+  31   2        }
+  32   1        
+  33   1        XPT2046_CS=1;
+  34   1        return ADValue>>8;
+  35   1      //至此显示0000，不赋值是2480
+  36   1        /*
+  37   1        if(Command&0x08)
+  38   1        {
+  39   1          return ADValue>>8;                     //读取从前还是从后？
+  40   1        }
+  41   1        else
+  42   1        {
+  43   1          return ADValue>>4;
+  44   1        }
+  45   1        *///NIMA根本不显示啊
+  46   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    112    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----       4
+C51 COMPILER V9.60.7.0   XPT2046                                                           10/26/2023 00:30:53 PAGE 2   
+
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)
